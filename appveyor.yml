@@ -1,0 +1,31 @@
+version: 0.0.1.{build}-test
+
+shallow_clone: true
+
+environment:
+  LUAROCKS_VER: 2.2.2
+  RUST_VERSION: nightly
+  LUA_VER: 5.2.4
+
+cache:
+  - c:\lua -> appveyor.yml
+  - c:\external -> appveyor.yml
+  - c:\Rust -> appveyor.yml
+
+init:
+  # Setup Lua development/build environment
+  # Make VS 2013 command line tools available
+  - call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" %platform%
+
+install:
+  - ps: Start-FileDownload "https://raw.githubusercontent.com/carllerche/travis-rust-matrix/master/install.ps1"; . .\install.ps1
+  # Setup Lua development/build environment
+  - call .appveyor\install.bat
+
+build: false
+
+test_script:
+- echo "Testing..."
+- set LIBRARY_PATH;%LIBRARY_PATH%
+- cd hlua
+- cargo test
